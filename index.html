@@ -871,8 +871,13 @@
         // Функция для открытия ссылки
         function openMaterials() {
             setTimeout(() => {
+                // Закрываем текущее приложение
+                if (window.Telegram && window.Telegram.WebApp) {
+                    window.Telegram.WebApp.close();
+                }
+                // Открываем новую ссылку
                 window.location.href = 'https://t.me/obukhov_channel_bot/education';
-            }, 300);
+            }, 500);
         }
 
         // Обновляем функцию отправки начальных данных
