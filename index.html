@@ -870,15 +870,26 @@
 
         // Функция для открытия ссылки
         function openMaterials() {
-            // Открываем ссылку в новом окне
-            window.open('https://t.me/obukhov_channel_bot/education', '_blank');
-            
-            // Закрываем текущее приложение после небольшой задержки
-            setTimeout(() => {
+            try {
+                // Используем метод Telegram WebApp для открытия ссылки
                 if (window.Telegram && window.Telegram.WebApp) {
-                    window.Telegram.WebApp.close();
+                    window.Telegram.WebApp.openLink('https://t.me/obukhov_channel_bot/education');
+                } else {
+                    // Запасной вариант, если Telegram WebApp недоступен
+                    window.open('https://t.me/obukhov_channel_bot/education', '_blank');
                 }
-            }, 500);
+                
+                // Закрываем текущее приложение после небольшой задержки
+                setTimeout(() => {
+                    if (window.Telegram && window.Telegram.WebApp) {
+                        window.Telegram.WebApp.close();
+                    }
+                }, 1000);
+            } catch (error) {
+                console.error('Ошибка при открытии ссылки:', error);
+                // Запасной вариант в случае ошибки
+                window.location.href = 'https://t.me/obukhov_channel_bot/education';
+            }
         }
 
         // Обновляем функцию отправки начальных данных
