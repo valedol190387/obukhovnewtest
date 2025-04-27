@@ -943,7 +943,10 @@
             try {
                 // Используем метод Telegram WebApp для открытия ссылки
                 if (window.Telegram && window.Telegram.WebApp) {
-                    window.Telegram.WebApp.openLink('https://t.me/obukhov_channel_bot/education');
+                    // Используем openTelegramLink чтобы открыть ссылку прямо в Telegram
+                    const url = 'https://t.me/obukhov_channel_bot/education';
+                    console.log('Открываем ссылку в Telegram:', url);
+                    window.Telegram.WebApp.openTelegramLink(url);
                 } else {
                     // Запасной вариант, если Telegram WebApp недоступен
                     window.open('https://t.me/obukhov_channel_bot/education', '_blank');
@@ -966,7 +969,10 @@
         function openChannel() {
             try {
                 if (window.Telegram && window.Telegram.WebApp) {
-                    window.Telegram.WebApp.openLink('https://t.me/obukhov_channel');
+                    // Используем openTelegramLink чтобы открыть ссылку прямо в Telegram
+                    const url = 'https://t.me/obukhov_channel';
+                    console.log('Открываем канал в Telegram:', url);
+                    window.Telegram.WebApp.openTelegramLink(url);
                 } else {
                     window.open('https://t.me/obukhov_channel', '_blank');
                 }
@@ -1119,7 +1125,7 @@
             } else if (formData.общий_балл < 15) {
                 resultImage = 'https://raw.githubusercontent.com/valedol190387/obukhovnewtest/refs/heads/main/xLGwC.jpg'; // URL для среднего результата
             } else {
-                resultImage = 'https://raw.githubusercontent.com/valedol190387/obukhovnewtest/refs/heads/main/ironman2.png'; // URL для плохого результата
+                resultImage = 'https://raw.githubusercontent.com/valedol190387/obukhovnewtest/refs/heads/main/ironman.png'; // URL для плохого результата
             }
 
             resultsCard.innerHTML = `
