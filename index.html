@@ -461,6 +461,27 @@
                 width: 32px;
             }
         }
+
+        /* Стили для кнопки в виде ссылки */
+        a.lesson-button {
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+            background: #4CAF50;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 24px auto;
+            transition: background-color 0.3s ease;
+        }
+
+        a.lesson-button:hover {
+            background: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -1133,7 +1154,7 @@
                 <p class="score">Твой общий балл: ${formData.общий_балл}</p>
                 <img src="${resultImage}" alt="Результат теста" class="result-image">
                 <div class="result-text">${resultText}</div>
-                <button class="lesson-button" onclick="openMaterials()">${formData.общий_балл <= 10 ? 'Получить материалы' : 'Низкое железо: что делать?'}</button>
+                <a href="https://t.me/obukhov_channel_bot/education" target="_blank" rel="noopener noreferrer" class="lesson-button">${formData.общий_балл <= 10 ? 'Получить материалы' : 'Низкое железо: что делать?'}</a>
             `;
 
             document.querySelector('.container').appendChild(resultsCard);
@@ -1167,7 +1188,7 @@
             subscriptionCard.innerHTML = `
                 <h2>Для получения результатов теста</h2>
                 <p>Вам необходимо быть подписанным на канал:</p>
-                <a href="#" onclick="openChannel(); return false;" class="channel-link">
+                <a href="https://t.me/obukhov_channel" target="_blank" rel="noopener noreferrer" class="channel-link">
                     "Биохакинг |Максим Обухов | Нутрициология"
                 </a>
                 <button class="check-subscription-button" onclick="checkSubscription()">Проверить подписку</button>
