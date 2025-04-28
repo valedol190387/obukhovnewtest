@@ -648,6 +648,124 @@
             форматы: []
         };
 
+        // Функция для сохранения прогресса
+        function saveProgress() {
+            try {
+                const progressData = {
+                    currentQuestion: currentQuestion,
+                    formData: formData
+                };
+                localStorage.setItem('ironTestProgress', JSON.stringify(progressData));
+                console.log('Прогресс сохранен:', progressData);
+            } catch (error) {
+                console.error('Ошибка при сохранении прогресса:', error);
+            }
+        }
+
+        // Функция для загрузки прогресса
+        function loadProgress() {
+            try {
+                const savedProgress = localStorage.getItem('ironTestProgress');
+                if (savedProgress) {
+                    const progressData = JSON.parse(savedProgress);
+                    currentQuestion = progressData.currentQuestion;
+                    formData = progressData.formData;
+                    console.log('Прогресс загружен:', progressData);
+                    
+                    // Восстанавливаем ответы на вопросы
+                    if (formData.профессия) {
+                        const occupationRadio = document.querySelector(`input[name="occupation"][value="${formData.профессия}"]`);
+                        if (occupationRadio) {
+                            occupationRadio.checked = true;
+                        } else {
+                            // Если это было "Другое"
+                            const otherRadio = document.querySelector('input[name="occupation"][value="other"]');
+                            if (otherRadio) {
+                                otherRadio.checked = true;
+                                const otherInput = document.getElementById('otherInput');
+                                if (otherInput) {
+                                    otherInput.style.display = 'block';
+                                    otherInput.value = formData.профессия;
+                                }
+                            }
+                        }
+                    }
+                    
+                    if (formData.цель) {
+                        const purposeRadio = document.querySelector(`input[name="purpose"][value="${formData.цель}"]`);
+                        if (purposeRadio) {
+                            purposeRadio.checked = true;
+                        }
+                    }
+                    
+                    // Восстанавливаем симптомы если они есть
+                    if (Object.keys(formData.симптомы).length > 0) {
+                        // Если текущий вопрос 3 или выше, создаем форму симптомов
+                        if (currentQuestion >= 3) {
+                            const purpose = document.querySelector('input[name="purpose"]:checked');
+                            const forClients = purpose && purpose.value === 'Для улучшения результатов своих клиентов/пациентов';
+                            createSymptomsForm(forClients);
+                            
+                            // Восстанавливаем выбранные симптомы
+                            for (const key in formData.симптомы) {
+                                const symptomIndex = parseInt(key.replace('симптом_', '')) - 1;
+                                const value = formData.симптомы[key].оценка;
+                                const radio = document.querySelector(`input[name="symptom${symptomIndex}"][value="${value}"]`);
+                                if (radio) {
+                                    radio.checked = true;
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Восстанавливаем выбранные интересы
+                    if (formData.интерес) {
+                        const interestRadio = document.querySelector(`input[name="interest"][value="${formData.интерес}"]`);
+                        if (interestRadio) {
+                            interestRadio.checked = true;
+                        } else {
+                            // Если это было "другое"
+                            const otherInterestRadio = document.querySelector('input[name="interest"][value="другое"]');
+                            if (otherInterestRadio) {
+                                otherInterestRadio.checked = true;
+                                const otherInterestInput = document.getElementById('otherInterestInput');
+                                if (otherInterestInput) {
+                                    otherInterestInput.style.display = 'block';
+                                    otherInterestInput.value = formData.интерес;
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Восстанавливаем выбранные форматы
+                    if (formData.форматы && formData.форматы.length > 0) {
+                        formData.форматы.forEach(format => {
+                            const formatCheckbox = document.querySelector(`input[name="format"][value="${format}"]`);
+                            if (formatCheckbox) {
+                                formatCheckbox.checked = true;
+                            }
+                        });
+                    }
+                    
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error('Ошибка при загрузке прогресса:', error);
+                return false;
+            }
+        }
+
+        // Функция для очистки прогресса
+        function clearProgress() {
+            try {
+                localStorage.removeItem('ironTestProgress');
+                console.log('Прогресс очищен');
+            } catch (error) {
+                console.error('Ошибка при очистке прогресса:', error);
+            }
+        }
+
         // Симптомы для вопроса 3
         const symptoms = [
             "Слабость, повышенная утомляемость, сложность встать по будильнику",
@@ -924,11 +1042,15 @@
             currentQuestion = num + 1;
             showQuestion(currentQuestion);
             updateBackButton();
+            // Сохраняем прогресс после перехода к следующему вопросу
+            saveProgress();
         }
 
         function prevQuestion(num) {
             currentQuestion = num - 1;
             showQuestion(currentQuestion);
+            // Сохраняем прогресс после возврата к предыдущему вопросу
+            saveProgress();
         }
 
         // Добавляем обработчик для поля ввода текста
@@ -1004,6 +1126,9 @@
                         window.Telegram.WebApp.close();
                     }
                 }, 1000);
+                
+                // Очищаем прогресс после успешного завершения теста
+                clearProgress();
             } catch (error) {
                 console.error('Ошибка при открытии ссылки:', error);
                 // Запасной вариант в случае ошибки
@@ -1088,6 +1213,9 @@
 
         // Функция для отображения результатов теста
         function showTestResults() {
+            // Очищаем прогресс при показе результатов
+            clearProgress();
+            
             // Удаляем карточку подписки, если она есть
             const subscriptionCard = document.querySelector('.subscription-card');
             if (subscriptionCard) {
@@ -1266,6 +1394,9 @@
             
             console.log('Инициализируем кнопки Telegram');
             
+            // Проверяем, есть ли сохраненный прогресс
+            const hasProgress = loadProgress();
+            
             // Сначала явно заставляем MainButton отобразиться
             try {
                 mainButton.setText('Далее');
@@ -1345,12 +1476,18 @@
             document.addEventListener('change', function(e) {
                 if (e.target.type === 'radio' || e.target.type === 'checkbox' || e.target.type === 'text') {
                     mainButton.enable(); // Всегда активируем кнопку при изменении
+                    // Сохраняем изменения в localStorage
+                    // Обновляем formData на основе текущих ответов
+                    formData = collectFormData();
+                    saveProgress();
                 }
             });
             
             // Инициализация остальных компонентов
             setupEventListeners();
             updateProgressBar();
+            // Если есть сохраненный прогресс, показываем вопрос, на котором остановились
+            // Иначе показываем первый вопрос
             showQuestion(currentQuestion);
             
             // Отправка начальных данных
