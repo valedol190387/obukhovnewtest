@@ -482,6 +482,31 @@
         a.lesson-button:hover {
             background: #45a049;
         }
+
+        .channel-name {
+            font-weight: bold;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            margin: 10px 0;
+        }
+
+        .subscribe-button {
+            display: inline-block;
+            background: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+            padding: 14px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin: 16px auto;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .subscribe-button:hover {
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body>
@@ -1188,9 +1213,8 @@
             subscriptionCard.innerHTML = `
                 <h2>Для получения результатов теста</h2>
                 <p>Вам необходимо быть подписанным на канал:</p>
-                <a href="https://t.me/obukhov_channel" target="_blank" rel="noopener noreferrer" class="channel-link">
-                    "Биохакинг |Максим Обухов | Нутрициология"
-                </a>
+                <p class="channel-name">"Биохакинг |Максим Обухов | Нутрициология"</p>
+                <a href="https://t.me/obukhov_channel" target="_blank" rel="noopener noreferrer" class="subscribe-button">Подписаться</a>
                 <button class="check-subscription-button" onclick="checkSubscription()">Проверить подписку</button>
             `;
             
